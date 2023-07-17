@@ -12,6 +12,7 @@ export default function App() {
     SickNmListProps[]
   >([]);
   const [searchHistory, setSearchHistory] = useState<string[]>([]);
+  const [selectSickNmsIndex, setSelectSickNmsIndex] = useState(-1);
 
   const debouncedAndThrottledSearchValue = useSearchQuery({
     value: searchValue,
@@ -93,6 +94,26 @@ export default function App() {
     }
   }, [cachedRecommendedSickNms]);
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      setSelectSickNmsIndex((prevIndex) =>
+        prevIndex <= 0 ? recommendedSickNms.length - 1 : prevIndex - 1
+      );
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      setSelectSickNmsIndex((prevIndex) =>
+        prevIndex >= recommendedSickNms.length - 1 ? 0 : prevIndex + 1
+      );
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      if (selectSickNmsIndex !== -1) {
+        const selectedSickNm = recommendedSickNms[selectSickNmsIndex];
+        directSearch(selectedSickNm.sickNm);
+      }
+    }
+  };
+
   return (
     <div className="bg-[#cae9ff] h-screen py-20">
       <div className="text-center text-2xl font-bold whitespace-nowrap">
@@ -113,6 +134,7 @@ export default function App() {
             onFocus={focusAndOpenPopup}
             value={searchValue}
             onChange={saveSearchValue}
+            onKeyDown={handleKeyDown}
           />
           <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-[#017be8] rounded-full flex justify-center items-center">
             <SearchIcon width={'18px'} height="18px" color="#ffffff" />
@@ -170,14 +192,20 @@ export default function App() {
                 <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
                   추천 검색어
                 </h1>
-                <ul className="max-h-[200px] overflow-y-auto">
+                <ul
+                  className="max-h-[200px] overflow-y-auto"
+                  tabIndex={0}
+                  onKeyDown={handleKeyDown}
+                >
                   {recommendedSickNms.length === 0 ? (
                     <li className="px-5 py-2 text-[#6f6f6f]">검색어 없음</li>
                   ) : (
-                    recommendedSickNms.map((recommendedSickNm) => (
+                    recommendedSickNms.map((recommendedSickNm, idx) => (
                       <li
                         key={recommendedSickNm.sickCd}
-                        className="px-5 py-2 hover:bg-slate-100"
+                        className={`px-5 py-2 hover:bg-slate-100 ${
+                          idx === selectSickNmsIndex ? 'bg-slate-100' : ''
+                        }`}
                       >
                         <div className="flex items-center space-x-2">
                           <div>

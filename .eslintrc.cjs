@@ -34,9 +34,11 @@ module.exports = {
   rules: {
     'import/prefer-default-export': 'off',
     'react/react-in-jsx-scope': 0,
+    'import/no-unresolved': 'off',
     'react-hooks/exhaustive-deps': 'off',
     'jsx-a11y/no-redundant-roles': 'off',
-    'import/no-unresolved': 'off',
+    'jsx-a11y/no-noninteractive-element-interactions': 'off',
+    'jsx-a11y/no-noninteractive-tabindex': 'off',
   },
   overrides: [
     {
