@@ -10,16 +10,43 @@ export default function App() {
   const [recommendedSickNms, setRecommendedSickNms] = useState<
     SickNmListProps[]
   >([]);
+  const [searchHistory, setSearchHistory] = useState<string[]>([]);
 
   const debouncedAndThrottledSearchValue = useSearchQuery({
     value: searchValue,
     delay: 100,
   });
-  console.log('v', debouncedAndThrottledSearchValue);
-  console.log(recommendedSickNms);
 
   const focusAndOpenPopup = () => {
     setIsOpenPopup(true);
+  };
+
+  const saveSearchValue = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { value } = event.target;
+    setSearchValue(value);
+  };
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    if (
+      event instanceof KeyboardEvent &&
+      event.key === 'Enter' &&
+      !searchValue
+    ) {
+      setIsOpenPopup(false);
+    }
+  };
+
+  const directSearch = (directSearchKeyword: string) => {
+    setSearchValue(directSearchKeyword);
+  };
+
+  const updateSearchHistory = (searchKeyword: string) => {
+    setSearchHistory((prev) => [searchKeyword, ...prev]);
+  };
+
+  const directSearchHistory = (searchKeyword: string) => {
+    setSearchValue(searchKeyword);
   };
 
   useEffect(() => {
@@ -54,17 +81,6 @@ export default function App() {
     getSearchLists();
   }, [debouncedAndThrottledSearchValue]);
 
-  const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
-    if (event instanceof KeyboardEvent && event.key === 'Enter') {
-      setIsOpenPopup(false);
-    }
-  };
-
-  const directSearch = (directSearchKeyword: string) => {
-    setSearchValue(directSearchKeyword);
-  };
-
   return (
     <div className="bg-[#cae9ff] h-screen py-20">
       <div className="text-center text-2xl font-bold whitespace-nowrap">
@@ -84,7 +100,7 @@ export default function App() {
             placeholder="질환명을 입력해 주세요."
             onFocus={focusAndOpenPopup}
             value={searchValue}
-            onChange={(e) => setSearchValue(e.target.value)}
+            onChange={saveSearchValue}
           />
           <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-[#017be8] rounded-full flex justify-center items-center">
             <SearchIcon width={'18px'} height="18px" color="#ffffff" />
@@ -106,11 +122,34 @@ export default function App() {
             ) : (
               <div className="text-sm">
                 <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
-                  추천 검색어
+                  최근 검색어
                 </h1>
-                <div className="px-5 py-1 text-[#b0b8bf]">
-                  최근 검색어가 없습니다
-                </div>
+                <ul className="px-5 py-1 text-[#b0b8bf]">
+                  {searchHistory.length === 0 ? (
+                    <li>최근 검색어가 없습니다.</li>
+                  ) : (
+                    searchHistory.map((searchKeyword) => (
+                      <li
+                        key={Math.random() + 1}
+                        className="px-5 py-2 hover:bg-slate-100"
+                      >
+                        <button
+                          onClick={() => directSearchHistory(searchKeyword)}
+                          className="flex items-center space-x-2"
+                        >
+                          <div>
+                            <SearchIcon
+                              width="14px"
+                              height="14px"
+                              color="#a6afb7"
+                            />
+                          </div>
+                          <div className="text-sm">{searchKeyword}</div>
+                        </button>
+                      </li>
+                    ))
+                  )}
+                </ul>
               </div>
             )}
             <div className="w-full h-[1px] bg-slate-200 mt-2 mb-5"></div>
@@ -162,7 +201,7 @@ export default function App() {
                   추천 검색어로 검색해보세요
                 </h1>
                 <div className="flex items-center space-x-2 text-sm px-5">
-                  {recommendedKeywordDirectBtn.map((recommendedKeyword) => (
+                  {RECOMMENDED_KEYWORDS.map((recommendedKeyword) => (
                     <div key={Math.random()}>
                       <button
                         onClick={() => directSearch(recommendedKeyword)}
@@ -182,10 +221,4 @@ export default function App() {
   );
 }
 
-const recommendedKeywordDirectBtn = [
-  '갑상선',
-  '비만',
-  '소화',
-  '우울',
-  '식도염',
-];
+const RECOMMENDED_KEYWORDS = ['갑상선', '비만', '소화', '우울', '식도염'];
