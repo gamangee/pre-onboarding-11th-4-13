@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './assets/icons';
 import useSearchQuery from './hooks/useSearchQuery';
 import { SickNmListProps, sickApi } from './service/searchAPI';
+import useLocalCache from './hooks/useLocalCache';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -80,6 +81,17 @@ export default function App() {
     };
     getSearchLists();
   }, [debouncedAndThrottledSearchValue]);
+
+  const cachedRecommendedSickNms = useLocalCache({
+    api: () => sickApi.getSickNmList(debouncedAndThrottledSearchValue),
+    cacheTime: 5 * 60 * 1000,
+  });
+
+  useEffect(() => {
+    if (cachedRecommendedSickNms) {
+      setRecommendedSickNms(cachedRecommendedSickNms);
+    }
+  }, [cachedRecommendedSickNms]);
 
   return (
     <div className="bg-[#cae9ff] h-screen py-20">

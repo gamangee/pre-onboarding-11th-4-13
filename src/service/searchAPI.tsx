@@ -15,6 +15,7 @@ class sickAPI {
   async getSickNmList(searchKeyword: string) {
     try {
       const response = await this.axiosInstance.get(`/sick?q=${searchKeyword}`);
+      console.info('calling api');
       return response.data.filter((item: SickNmListProps) =>
         item.sickNm.startsWith(searchKeyword)
       );
