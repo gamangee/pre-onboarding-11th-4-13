@@ -23,7 +23,6 @@ module.exports = {
     },
     ecmaVersion: 2021,
     sourceType: 'module',
-    project: './tsconfig.json',
   },
   plugins: ['react', 'react-hooks', 'jsx-a11y', 'import', '@typescript-eslint'],
   settings: {
@@ -32,16 +31,13 @@ module.exports = {
     },
   },
   rules: {
-    'no-console': 'error',
     'import/prefer-default-export': 'off',
+    'react/react-in-jsx-scope': 0,
   },
   overrides: [
     {
       files: ['**/*.+(ts|tsx)'],
-      extends: [
-        'plugin:@typescript-eslint/recommended',
-        'prettier/@typescript-eslint',
-      ],
+      extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
     },
   ],
 };
