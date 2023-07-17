@@ -1,17 +1,22 @@
-/* eslint-disable import/no-unresolved */
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './assets/icons';
 import useSearchQuery from './hooks/useSearchQuery';
+import { SickNmListProps, sickApi } from './service/searchAPI';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
+  const [recommendedSickNms, setRecommendedSickNms] = useState<
+    SickNmListProps[]
+  >([]);
 
   const debouncedAndThrottledSearchValue = useSearchQuery({
     value: searchValue,
     delay: 100,
   });
+  console.log('v', debouncedAndThrottledSearchValue);
+  console.log(recommendedSickNms);
 
   const focusAndOpenPopup = () => {
     setIsOpenPopup(true);
@@ -35,13 +40,38 @@ export default function App() {
     };
   }, [isOpenPopup]);
 
+  useEffect(() => {
+    const getSearchLists = async () => {
+      try {
+        const searchList = await sickApi.getSickNmList(
+          debouncedAndThrottledSearchValue
+        );
+        setRecommendedSickNms(searchList);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getSearchLists();
+  }, [debouncedAndThrottledSearchValue]);
+
+  const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
+    if (event instanceof KeyboardEvent && event.key === 'Enter') {
+      setIsOpenPopup(false);
+    }
+  };
+
+  const directSearch = (directSearchKeyword: string) => {
+    setSearchValue(directSearchKeyword);
+  };
+
   return (
     <div className="bg-[#cae9ff] h-screen py-20">
       <div className="text-center text-2xl font-bold whitespace-nowrap">
         <h1 className="mb-1">국내 모든 임상시험 검색하고</h1>
         <h1>온라인으로 참여하기</h1>
       </div>
-      <form className="px-5 mt-10">
+      <form className="px-5 mt-10" onSubmit={onSubmit}>
         <label htmlFor="search" className="relative">
           <div className="absolute top-1/2 left-[20px] translate-y-[-50%]">
             <SearchIcon width="14px" height="14px" color="#a6afb7" />
@@ -64,40 +94,98 @@ export default function App() {
       {isOpenPopup && (
         <div className="px-5 mt-2">
           <div className="bg-white rounded-2xl shadow-md py-5">
-            <div className="px-5 py-2 flex items-center hover:bg-slate-100 space-x-2 cursor-pointer">
+            {debouncedAndThrottledSearchValue ? (
+              <div className="px-5 py-2 flex items-center hover:bg-slate-100 space-x-2 cursor-pointer">
+                <div>
+                  <SearchIcon width="14px" height="14px" color="#a6afb7" />
+                </div>
+                <div className="font-semibold text-sm">
+                  {debouncedAndThrottledSearchValue}
+                </div>
+              </div>
+            ) : (
+              <div className="text-sm">
+                <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
+                  추천 검색어
+                </h1>
+                <div className="px-5 py-1 text-[#b0b8bf]">
+                  최근 검색어가 없습니다
+                </div>
+              </div>
+            )}
+            <div className="w-full h-[1px] bg-slate-200 mt-2 mb-5"></div>
+            {debouncedAndThrottledSearchValue ? (
+              <div className="text-sm">
+                <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
+                  추천 검색어
+                </h1>
+                <ul className="max-h-[200px] overflow-y-auto">
+                  {recommendedSickNms.length === 0 ? (
+                    <li className="px-5 py-2 text-[#6f6f6f]">검색어 없음</li>
+                  ) : (
+                    recommendedSickNms.map((recommendedSickNm) => (
+                      <li
+                        key={recommendedSickNm.sickCd}
+                        className="px-5 py-2 hover:bg-slate-100"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <div>
+                            <SearchIcon
+                              width="14px"
+                              height="14px"
+                              color="#a6afb7"
+                            />
+                          </div>
+                          <div className="text-sm">
+                            <span className="font-bold">
+                              {recommendedSickNm.sickNm.slice(
+                                0,
+                                debouncedAndThrottledSearchValue.length
+                              )}
+                            </span>
+                            <span>
+                              {recommendedSickNm.sickNm.slice(
+                                debouncedAndThrottledSearchValue.length,
+                                recommendedSickNm.sickNm.length
+                              )}
+                            </span>
+                          </div>
+                        </div>
+                      </li>
+                    ))
+                  )}
+                </ul>
+              </div>
+            ) : (
               <div>
-                <SearchIcon width="14px" height="14px" color="#a6afb7" />
-              </div>
-              <div className="font-semibold text-sm">
-                {debouncedAndThrottledSearchValue}
-              </div>
-            </div>
-            <div>
-              <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
-                추천 검색어
-              </h1>
-              <ul>
-                <li className="px-5 py-2 hover:bg-slate-100">
-                  <div className="flex items-center space-x-2">
-                    <div>
-                      <SearchIcon width="14px" height="14px" color="#a6afb7" />
+                <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
+                  추천 검색어로 검색해보세요
+                </h1>
+                <div className="flex items-center space-x-2 text-sm px-5">
+                  {recommendedKeywordDirectBtn.map((recommendedKeyword) => (
+                    <div key={Math.random()}>
+                      <button
+                        onClick={() => directSearch(recommendedKeyword)}
+                        className="mt-2 cursor-pointer rounded-2xl px-3 py-1 bg-[#eef8ff] text-[#5aa0f0] hover:bg-[#e1f3ff]"
+                      >
+                        {recommendedKeyword}
+                      </button>
                     </div>
-                    <div className="font-semibold text-sm">관절염</div>
-                  </div>
-                </li>
-                <li className="px-5 py-2 hover:bg-slate-100">
-                  <div className="flex items-center space-x-2">
-                    <div>
-                      <SearchIcon width="14px" height="14px" color="#a6afb7" />
-                    </div>
-                    <div className="font-semibold text-sm">관절염</div>
-                  </div>
-                </li>
-              </ul>
-            </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
       )}
     </div>
   );
 }
+
+const recommendedKeywordDirectBtn = [
+  '갑상선',
+  '비만',
+  '소화',
+  '우울',
+  '식도염',
+];
