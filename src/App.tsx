@@ -1,10 +1,17 @@
 /* eslint-disable import/no-unresolved */
 import { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './assets/icons';
+import useSearchQuery from './hooks/useSearchQuery';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
   const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+  const [searchValue, setSearchValue] = useState<string>('');
+
+  const debouncedAndThrottledSearchValue = useSearchQuery({
+    value: searchValue,
+    delay: 100,
+  });
 
   const focusAndOpenPopup = () => {
     setIsOpenPopup(true);
@@ -46,6 +53,8 @@ export default function App() {
             className="w-full py-4 rounded-full pl-12 text-sm"
             placeholder="질환명을 입력해 주세요."
             onFocus={focusAndOpenPopup}
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
           />
           <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-[#017be8] rounded-full flex justify-center items-center">
             <SearchIcon width={'18px'} height="18px" color="#ffffff" />
@@ -59,7 +68,9 @@ export default function App() {
               <div>
                 <SearchIcon width="14px" height="14px" color="#a6afb7" />
               </div>
-              <div className="font-semibold text-sm">관절염</div>
+              <div className="font-semibold text-sm">
+                {debouncedAndThrottledSearchValue}
+              </div>
             </div>
             <div>
               <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
