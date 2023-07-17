@@ -16,7 +16,6 @@ const useLocalCache = ({ api, cacheTime }: LocalCacheProps) => {
 
   const fetchData = async () => {
     try {
-      console.info('cache calling api');
       const data = await api();
       const expireTime = Date.now() + cacheTime;
       setCahchedData({ data, expireTime });

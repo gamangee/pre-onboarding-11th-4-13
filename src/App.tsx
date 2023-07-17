@@ -72,6 +72,7 @@ export default function App() {
   useEffect(() => {
     const getSearchLists = async () => {
       try {
+        console.log('calling api');
         const searchList = await sickApi.getSickNmList(
           debouncedAndThrottledSearchValue
         );
