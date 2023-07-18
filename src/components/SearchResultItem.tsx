@@ -5,6 +5,7 @@ interface SearchResultItemProps {
   searchValue: string;
   resultKeyword: string;
   onKeyboard: boolean;
+  fontBold?: boolean;
   directSearch: (searchKeyword: string) => void;
   setSelectIndex: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -13,6 +14,7 @@ export default function SearchResultItem({
   searchValue,
   resultKeyword,
   onKeyboard,
+  fontBold,
   directSearch,
   setSelectIndex,
 }: SearchResultItemProps) {
@@ -25,6 +27,11 @@ export default function SearchResultItem({
       <button
         type="button"
         onClick={() => directSearch(resultKeyword)}
+        onKeyDown={(event) => {
+          if (event.key === 'Enter') {
+            directSearch(resultKeyword);
+          }
+        }}
         onMouseOver={() => setSelectIndex(-1)}
         className="flex items-center space-x-2"
       >
@@ -33,7 +40,7 @@ export default function SearchResultItem({
         </div>
         <div className="text-sm">
           {searchValue && (
-            <span className="font-bold">
+            <span className={`${fontBold ? 'font-bold' : ''}`}>
               {resultKeyword.slice(0, searchValue.length)}
             </span>
           )}

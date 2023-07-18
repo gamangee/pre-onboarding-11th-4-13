@@ -59,6 +59,7 @@ export default function SearchPopup({
                   directSearch={directSearch}
                   onKeyboard={selectIndex === index}
                   setSelectIndex={setSelectIndex}
+                  fontBold={true}
                 />
               ))}
             </ul>
@@ -100,7 +101,7 @@ export default function SearchPopup({
             <h1 className="text-lightGray text-xs mt-3 mb-1 px-7">
               추천 검색어로 검색해보세요
             </h1>
-            <div className="flex items-center space-x-2 text-sm px-7 z-10">
+            <div className="flex items-center space-x-2 text-sm px-7">
               {RECOMMENDED_KEYWORDS.map(({ id, keyword }) => (
                 <div key={id}>
                   <button

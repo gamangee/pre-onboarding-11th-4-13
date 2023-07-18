@@ -18,7 +18,7 @@ export default function App() {
 
   const debouncedAndThrottledSearchValue = useSearchQuery({
     value: searchValue,
-    delay: 300,
+    delay: 500,
   });
 
   const { searchHistory, updateSearchHistory } = useSearchHistory();
@@ -64,15 +64,15 @@ export default function App() {
   }, [handleKeyboard]);
 
   return (
-    <section className="bg-skyblue h-screen py-20">
-      <div className="text-center text-2xl font-bold whitespace-nowrap">
+    <section className="bg-skyblue pt-20 h-screen">
+      <div className="mb-10 text-center leading-10 text-3xl font-bold whitespace-nowrap">
         <h1>
           국내 모든 임상시험 검색하고
           <br />
           온라인으로 참여하기
         </h1>
       </div>
-      <div className="px-5 mt-10">
+      <div className="w-full max-w-[600px] px-5 m-auto">
         <SearchSickNm
           setIsOpenPopup={setIsOpenPopup}
           searchValue={searchValue}

@@ -22,12 +22,25 @@ const useKeyboard = (
       if (event.isComposing) return;
 
       if (event.key === KEYBOARD.enter) {
-        if (recommendedSickNms[selectIndex]) {
+        // event.preventDefault();
+        if (selectIndex >= 0 && selectIndex < recommendedSickNms.length) {
+          const selectedItem = recommendedSickNms[selectIndex]?.sickNm;
+          if (selectedItem) {
+            setSearchValue(selectedItem);
+            setIsOpenPopup(false);
+          }
+          return;
+        } else if (
+          selectIndex >= recommendedSickNms.length &&
+          selectIndex < recommendedSickNms.length + searchHistory.length
+        ) {
           const selectedItem =
-            recommendedSickNms[selectIndex]?.sickNm ||
-            searchHistory[selectIndex];
-          setSearchValue(selectedItem);
-          setIsOpenPopup(false);
+            searchHistory[selectIndex - recommendedSickNms.length];
+          if (selectedItem) {
+            setSearchValue(selectedItem);
+            setIsOpenPopup(false);
+          }
+          return;
         }
       }
 
