@@ -3,6 +3,7 @@ import { SearchIcon } from './assets/icons';
 import { SickNmListProps, searchSickNmListAPI } from './service/searchAPI';
 import useSearchQuery from './hooks/useSearchQuery';
 import useKeyboard from './hooks/useKeyBoard';
+import useSearchHistory from './hooks/useSearchHistory';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -11,13 +12,14 @@ export default function App() {
   const [recommendedSickNms, setRecommendedSickNms] = useState<
     SickNmListProps[]
   >([]);
-  const [searchHistory, setSearchHistory] = useState<string[]>([]);
   const [selectSickNmsIndex, setSelectSickNmsIndex] = useState(-1);
 
   const debouncedAndThrottledSearchValue = useSearchQuery({
     value: searchValue,
     delay: 100,
   });
+
+  const { searchHistory, updateSearchHistory } = useSearchHistory();
 
   const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
     recommendedSickNms,
@@ -54,26 +56,6 @@ export default function App() {
   const directSearch = (directSearchKeyword: string) => {
     setSearchValue(directSearchKeyword);
   };
-
-  const updateSearchHistory = (searchKeyword: string) => {
-    if (searchHistory.includes(searchKeyword)) {
-      return;
-    }
-    let updatedHistory = [...searchHistory, searchKeyword];
-    if (updatedHistory.length > 5) {
-      updatedHistory = updatedHistory.slice(1);
-    }
-
-    setSearchHistory(updatedHistory);
-    sessionStorage.setItem('recentlyKeywords', JSON.stringify(updatedHistory));
-  };
-
-  useEffect(() => {
-    const loadedSearchHistory = sessionStorage.getItem('recentlyKeywords');
-    if (loadedSearchHistory) {
-      setSearchHistory(JSON.parse(loadedSearchHistory));
-    }
-  }, []);
 
   const directSearchHistory = (searchKeyword: string) => {
     setSearchValue(searchKeyword);
@@ -132,7 +114,6 @@ export default function App() {
             onFocus={focusAndOpenPopup}
             value={searchValue}
             onChange={saveSearchValue}
-            onKeyDown={handleKeyDown}
           />
           <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-[#017be8] rounded-full flex justify-center items-center">
             <SearchIcon width={'18px'} height="18px" color="#ffffff" />
@@ -190,11 +171,7 @@ export default function App() {
                 <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
                   추천 검색어
                 </h1>
-                <ul
-                  className="max-h-[200px] overflow-y-auto"
-                  tabIndex={0}
-                  onKeyDown={handleKeyDown}
-                >
+                <ul className="max-h-[200px] overflow-y-auto" tabIndex={0}>
                   {recommendedSickNms.length === 0 ? (
                     <li className="px-5 py-2 text-[#6f6f6f]">검색어 없음</li>
                   ) : (
