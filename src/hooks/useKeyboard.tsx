@@ -23,8 +23,8 @@ const useKeyboard = (
       if (event.key === KEYBOARD.enter) {
         if (recommendedSickNms[selectIndex]) {
           setSearchValue(recommendedSickNms[selectIndex].sickNm);
-          setIsOpenPopup(false);
         }
+        setIsOpenPopup(false);
       }
 
       if (event.key === KEYBOARD.arrowUp) {

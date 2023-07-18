@@ -31,8 +31,6 @@ export default function SearchPopup({
   setSelectIndex,
 }: SearchPopupProps) {
   const directSearch = (searchKeyword: string) => {
-    console.log('click');
-
     setSearchValue(searchKeyword);
     handleSearchValue(searchKeyword);
   };

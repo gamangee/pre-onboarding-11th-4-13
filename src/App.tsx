@@ -33,6 +33,7 @@ export default function App() {
   const handleSearchValue = (searchSickNm: string) => {
     if (searchSickNm.trim().length === 0) return;
     updateSearchHistory(searchSickNm);
+    setIsOpenPopup(false);
     if (popupRef.current) popupRef.current.className = 'hidden';
   };
 
@@ -77,7 +78,7 @@ export default function App() {
           setSearchValue={setSearchValue}
           handleSearchValue={handleSearchValue}
         />
-        <div ref={popupRef} className={isOpenPopup ? '' : 'hidden'}>
+        <div ref={popupRef} className={isOpenPopup ? '' : 'opacity-0'}>
           <SearchPopup
             isLoading={isLoading}
             searchValue={searchValue}
