@@ -50,7 +50,7 @@ const useKeyboard = (
     ]
   );
 
-  return { handleKeyboard, selectIndex, setSelectIndex };
+  return { handleKeyboard, setSelectIndex };
 };
 
 export default useKeyboard;

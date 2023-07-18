@@ -8,12 +8,11 @@ import useKeyboard from './hooks/useKeyboard';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
+  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(true);
   const [searchValue, setSearchValue] = useState<string>('');
   const [recommendedSickNms, setRecommendedSickNms] = useState<
     SickNmListProps[]
   >([]);
-  console.log(recommendedSickNms);
 
   const popupRef = useRef<HTMLDivElement>(null);
 
@@ -24,7 +23,7 @@ export default function App() {
 
   const { searchHistory, updateSearchHistory } = useSearchHistory();
 
-  const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
+  const { handleKeyboard, setSelectIndex } = useKeyboard(
     recommendedSickNms,
     isOpenPopup,
     setIsOpenPopup,
@@ -63,7 +62,7 @@ export default function App() {
   }, [handleKeyboard]);
 
   return (
-    <section className="bg-[#cae9ff] h-screen py-20">
+    <section className="bg-skyblue h-screen py-20">
       <div className="text-center text-2xl font-bold whitespace-nowrap">
         <h1>
           국내 모든 임상시험 검색하고
@@ -73,7 +72,6 @@ export default function App() {
       </div>
       <div className="px-5 mt-10">
         <SearchSickNm
-          isOpenPopup={isOpenPopup}
           setIsOpenPopup={setIsOpenPopup}
           searchValue={searchValue}
           setSearchValue={setSearchValue}
@@ -88,7 +86,6 @@ export default function App() {
             searchHistory={searchHistory}
             handleSearchValue={handleSearchValue}
             recommendedSickNms={recommendedSickNms}
-            selectIndex={selectIndex}
             setSelectIndex={setSelectIndex}
           />
         </div>

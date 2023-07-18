@@ -2,14 +2,12 @@ import { DeleteBtn, SearchIcon } from '../assets/icons';
 
 interface SearchSickNmProps {
   searchValue: string;
-  isOpenPopup: boolean;
   handleSearchValue: (searchValue: string) => void;
   setIsOpenPopup: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchValue: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export default function SearchSickNm({
-  isOpenPopup,
   setIsOpenPopup,
   searchValue,
   setSearchValue,
@@ -24,7 +22,10 @@ export default function SearchSickNm({
     handleSearchValue(searchValue);
   };
 
-  const resetSearchValue = () => setSearchValue('');
+  const resetSearchValue = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    setSearchValue('');
+  };
 
   return (
     <form onSubmit={onSubmit}>
@@ -35,7 +36,7 @@ export default function SearchSickNm({
         <input
           id="search"
           type="text"
-          className="w-full py-4 rounded-full pl-12 text-sm"
+          className="w-full py-6 rounded-full pl-12 text-sm"
           placeholder="질환명을 입력해 주세요."
           value={searchValue}
           onInput={saveSearchValue}
@@ -45,15 +46,15 @@ export default function SearchSickNm({
         <button
           onClick={resetSearchValue}
           className={`${
-            isOpenPopup
+            searchValue
               ? 'pointer-events-auto'
               : 'opacity-0 pointer-events-none'
           } flex justify-center items-center w-5 h-5 rounded-full bg-gray-400 absolute top-0 right-16`}
         >
           <DeleteBtn />
         </button>
-        <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-[#017be8] rounded-full flex justify-center items-center">
-          <SearchIcon width={'18px'} height="18px" color="#ffffff" />
+        <button className="absolute top-1/2 translate-y-[-50%] right-[10px] w-10 h-10 bg-blue rounded-full flex justify-center items-center">
+          <SearchIcon width="18px" height="18px" color="#ffffff" />
         </button>
       </label>
     </form>

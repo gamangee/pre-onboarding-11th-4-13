@@ -1,9 +1,9 @@
-import { SearchIcon } from '../assets/icons';
+/* eslint-disable jsx-a11y/no-noninteractive-tabindex */
 import { SickNmListProps } from '../service/searchAPI';
+import SearchResultItem from './SearchResultItem';
 
 interface SearchPopupProps {
   isLoading: boolean;
-  selectIndex: number;
   searchValue: string;
   debouncedAndThrottledSearchValue: string;
   searchHistory: string[];
@@ -13,6 +13,10 @@ interface SearchPopupProps {
   setSelectIndex: React.Dispatch<React.SetStateAction<number>>;
 }
 
+SearchPopup.defaultProps = {
+  recommendedSickNms: [],
+};
+
 export default function SearchPopup({
   isLoading,
   searchValue,
@@ -21,7 +25,6 @@ export default function SearchPopup({
   searchHistory,
   handleSearchValue,
   recommendedSickNms,
-  selectIndex,
   setSelectIndex,
 }: SearchPopupProps) {
   const directSearch = (searchKeyword: string) => {
@@ -30,119 +33,88 @@ export default function SearchPopup({
   };
 
   return (
-    <div>
-      <div className="px-5 mt-2">
-        <div className="bg-white rounded-2xl shadow-lg py-5">
-          {debouncedAndThrottledSearchValue ? (
-            <div className="px-5 py-2 flex items-center hover:bg-slate-100 space-x-2 cursor-pointer">
-              <div>
-                <SearchIcon width="14px" height="14px" color="#a6afb7" />
-              </div>
-              <div className="font-semibold text-sm">
-                {debouncedAndThrottledSearchValue}
-              </div>
-            </div>
+    <div className="bg-white rounded-2xl shadow-md py-5 mt-2">
+      {searchValue ? (
+        <div>
+          <SearchResultItem
+            searchValue={searchValue}
+            resultKeyword={searchValue}
+            directSearch={directSearch}
+            setSelectIndex={setSelectIndex}
+          />
+          <h1 className="text-lightGray text-xs mt-3 mb-1 px-7">추천 검색어</h1>
+          {isLoading ? (
+            <h2 className="text-sm text-darkGray px-7">검색중</h2>
+          ) : recommendedSickNms.length > 0 ? (
+            <ul>
+              {recommendedSickNms.map(({ sickCd, sickNm }) => (
+                <SearchResultItem
+                  key={sickCd}
+                  searchValue={debouncedAndThrottledSearchValue}
+                  resultKeyword={sickNm}
+                  directSearch={directSearch}
+                  setSelectIndex={setSelectIndex}
+                />
+              ))}
+            </ul>
           ) : (
-            <div className="text-sm">
-              <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
-                최근 검색어
-              </h1>
-              <ul className="px-5 py-1">
-                {searchHistory.length === 0 ? (
-                  <li className="text-[#b0b8bf]">최근 검색어가 없습니다.</li>
-                ) : (
-                  searchHistory.map((searchKeyword) => (
-                    <li
-                      key={Math.random() + 1}
-                      className="px-5 py-2 hover:bg-slate-100"
-                    >
-                      <button
-                        onClick={() => directSearch(searchKeyword)}
-                        className="flex items-center space-x-2"
-                      >
-                        <div>
-                          <SearchIcon
-                            width="14px"
-                            height="14px"
-                            color="#a6afb7"
-                          />
-                        </div>
-                        <div className="text-sm">{searchKeyword}</div>
-                      </button>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          )}
-          <div className="w-full h-[1px] bg-slate-200 mt-2 mb-5"></div>
-          {debouncedAndThrottledSearchValue ? (
-            <div className="text-sm">
-              <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
-                추천 검색어
-              </h1>
-              <ul className="max-h-[200px] overflow-y-auto" tabIndex={0}>
-                {recommendedSickNms.length === 0 ? (
-                  <li className="px-5 py-2 text-[#6f6f6f]">검색어 없음</li>
-                ) : (
-                  recommendedSickNms.map((recommendedSickNm, idx) => (
-                    <li
-                      key={recommendedSickNm.sickCd}
-                      className={`px-5 py-2 hover:bg-slate-100 ${
-                        idx === selectIndex ? 'bg-slate-100' : ''
-                      }`}
-                    >
-                      <div className="flex items-center space-x-2">
-                        <div>
-                          <SearchIcon
-                            width="14px"
-                            height="14px"
-                            color="#a6afb7"
-                          />
-                        </div>
-                        <div className="text-sm">
-                          <span className="font-bold">
-                            {recommendedSickNm.sickNm.slice(
-                              0,
-                              debouncedAndThrottledSearchValue.length
-                            )}
-                          </span>
-                          <span>
-                            {recommendedSickNm.sickNm.slice(
-                              debouncedAndThrottledSearchValue.length,
-                              recommendedSickNm.sickNm.length
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    </li>
-                  ))
-                )}
-              </ul>
-            </div>
-          ) : (
-            <div>
-              <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
-                추천 검색어로 검색해보세요
-              </h1>
-              <div className="flex items-center space-x-2 text-sm px-5">
-                {RECOMMENDED_KEYWORDS.map((recommendedKeyword) => (
-                  <div key={Math.random()}>
-                    <button
-                      onClick={() => directSearch(recommendedKeyword)}
-                      className="mt-2 cursor-pointer rounded-2xl px-3 py-1 bg-[#eef8ff] text-[#5aa0f0] hover:bg-[#e1f3ff]"
-                    >
-                      {recommendedKeyword}
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <h2 className="text-sm text-lightGray px-7 mt-3">검색어 없음</h2>
           )}
         </div>
-      </div>
+      ) : (
+        <div>
+          <div>
+            <h1 className="text-lightGray text-xs mb-1 px-7">최근 검색어</h1>
+            <div>
+              {searchHistory.length ? (
+                <ul>
+                  {searchHistory.map((searchValue, index) => (
+                    <SearchResultItem
+                      key={searchValue + index}
+                      searchValue={searchValue}
+                      resultKeyword={searchValue}
+                      directSearch={directSearch}
+                      setSelectIndex={setSelectIndex}
+                    />
+                  ))}
+                </ul>
+              ) : (
+                <div>
+                  <h2 className="text-sm text-lightGray px-7 mt-3">
+                    최근 검색어가 없습니다
+                  </h2>
+                  <div className="w-full h-[1px] bg-borderGray my-5" />
+                </div>
+              )}
+            </div>
+          </div>
+          <div>
+            <h1 className="text-lightGray text-xs mt-3 mb-1 px-7">
+              추천 검색어로 검색해보세요
+            </h1>
+            <div className="flex items-center space-x-2 text-sm px-7">
+              {RECOMMENDED_KEYWORDS.map(({ id, keyword }) => (
+                <div key={id}>
+                  <button
+                    onClick={() => directSearch(keyword)}
+                    className="mt-2 cursor-pointer rounded-2xl px-3 py-1 bg-lightblue text-blue hover:bg-lightblueHover"
+                  >
+                    {keyword}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-const RECOMMENDED_KEYWORDS = ['갑상선', '비만', '소화', '우울', '식도염'];
+const RECOMMENDED_KEYWORDS = [
+  { id: 0, keyword: '갑상선' },
+  { id: 1, keyword: '비만' },
+  { id: 2, keyword: '소화' },
+  { id: 3, keyword: '우울' },
+  { id: 4, keyword: '식도염' },
+];
