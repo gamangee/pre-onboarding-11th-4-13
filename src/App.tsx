@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './assets/icons';
+import { SickNmListProps, searchSickNmListAPI } from './service/searchAPI';
 import useSearchQuery from './hooks/useSearchQuery';
-import { SickNmListProps, sickApi } from './service/searchAPI';
-import useLocalCache from './hooks/useLocalCache';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -30,12 +29,17 @@ export default function App() {
 
   const onSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
     event.preventDefault();
+    const inputElement = event.currentTarget.elements.namedItem(
+      'searchInput'
+    ) as HTMLInputElement;
+
     if (
-      event instanceof KeyboardEvent &&
-      event.key === 'Enter' &&
-      !searchValue
+      inputElement &&
+      inputElement.value &&
+      inputElement.value !== searchValue
     ) {
-      setIsOpenPopup(false);
+      updateSearchHistory(inputElement.value);
+      setSearchValue('');
     }
   };
 
@@ -44,8 +48,24 @@ export default function App() {
   };
 
   const updateSearchHistory = (searchKeyword: string) => {
-    setSearchHistory((prev) => [searchKeyword, ...prev]);
+    if (searchHistory.includes(searchKeyword)) {
+      return;
+    }
+    let updatedHistory = [...searchHistory, searchKeyword];
+    if (updatedHistory.length > 5) {
+      updatedHistory = updatedHistory.slice(1);
+    }
+
+    setSearchHistory(updatedHistory);
+    sessionStorage.setItem('recentlyKeywords', JSON.stringify(updatedHistory));
   };
+
+  useEffect(() => {
+    const loadedSearchHistory = sessionStorage.getItem('recentlyKeywords');
+    if (loadedSearchHistory) {
+      setSearchHistory(JSON.parse(loadedSearchHistory));
+    }
+  }, []);
 
   const directSearchHistory = (searchKeyword: string) => {
     setSearchValue(searchKeyword);
@@ -73,7 +93,7 @@ export default function App() {
     const getSearchLists = async () => {
       try {
         console.log('calling api');
-        const searchList = await sickApi.getSickNmList(
+        const searchList = await searchSickNmListAPI.getSickNmList(
           debouncedAndThrottledSearchValue
         );
         setRecommendedSickNms(searchList);
@@ -83,17 +103,6 @@ export default function App() {
     };
     getSearchLists();
   }, [debouncedAndThrottledSearchValue]);
-
-  const cachedRecommendedSickNms = useLocalCache({
-    api: () => sickApi.getSickNmList(debouncedAndThrottledSearchValue),
-    cacheTime: 5 * 60 * 1000,
-  });
-
-  useEffect(() => {
-    if (cachedRecommendedSickNms) {
-      setRecommendedSickNms(cachedRecommendedSickNms);
-    }
-  }, [cachedRecommendedSickNms]);
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
     if (event.key === 'ArrowUp') {
@@ -110,7 +119,13 @@ export default function App() {
       event.preventDefault();
       if (selectSickNmsIndex !== -1) {
         const selectedSickNm = recommendedSickNms[selectSickNmsIndex];
+        setSelectSickNmsIndex(-1);
         directSearch(selectedSickNm.sickNm);
+      } else if (searchValue) {
+        updateSearchHistory(searchValue);
+        setSearchValue('');
+      } else if (!searchValue) {
+        setIsOpenPopup(false);
       }
     }
   };
@@ -159,9 +174,9 @@ export default function App() {
                 <h1 className="text-[#a6afb7] text-xs mt-3 mb-1 px-5">
                   최근 검색어
                 </h1>
-                <ul className="px-5 py-1 text-[#b0b8bf]">
+                <ul className="px-5 py-1">
                   {searchHistory.length === 0 ? (
-                    <li>최근 검색어가 없습니다.</li>
+                    <li className="text-[#b0b8bf]">최근 검색어가 없습니다.</li>
                   ) : (
                     searchHistory.map((searchKeyword) => (
                       <li
