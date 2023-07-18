@@ -9,7 +9,7 @@ export default {
         lightblue: '#eef8ff',
         lightblueHover: '#e1f3ff',
         lightGray: '#a6afb7',
-        lightGrayHover: '#fafafa',
+        lightGrayHover: '#f3f4f6',
         darkGray: '6a737b',
         borderGray: '#edf0f2',
       },

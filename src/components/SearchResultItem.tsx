@@ -4,6 +4,7 @@ import { SearchIcon } from '../assets/icons';
 interface SearchResultItemProps {
   searchValue: string;
   resultKeyword: string;
+  onKeyboard: boolean;
   directSearch: (searchKeyword: string) => void;
   setSelectIndex: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -11,11 +12,16 @@ interface SearchResultItemProps {
 export default function SearchResultItem({
   searchValue,
   resultKeyword,
+  onKeyboard,
   directSearch,
   setSelectIndex,
 }: SearchResultItemProps) {
   return (
-    <li className="px-5 py-2 hover:bg-lightGrayHover list-none">
+    <li
+      className={`px-5 py-2 hover:bg-lightGrayHover list-none ${
+        onKeyboard ? 'bg-lightGrayHover' : ''
+      }`}
+    >
       <button
         onClick={() => directSearch(searchValue)}
         onMouseOver={() => setSelectIndex(-1)}

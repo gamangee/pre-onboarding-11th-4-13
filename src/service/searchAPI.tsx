@@ -38,12 +38,10 @@ class searchSickNmAPI {
     if (cacheRes) return await cacheRes.json();
 
     try {
-      const { data } = await this.axiosInstance.get(
-        `/sick?q=${searchKeyword}`,
-        config
-      );
+      const { data } = await this.axiosInstance.get(API_URL, config);
       console.info('calling api');
       setCacheStorage(API_URL, queryStr, data);
+      return data;
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
       alert(axiosError.response?.data.message || ERROR_MESSAGE);

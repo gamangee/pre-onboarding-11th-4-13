@@ -21,8 +21,10 @@ const useKeyboard = (
       if (event.isComposing) return;
 
       if (event.key === KEYBOARD.enter) {
-        setSearchValue(recommendedSickNms[selectIndex].sickNm);
-        setIsOpenPopup(false);
+        if (recommendedSickNms[selectIndex]) {
+          setSearchValue(recommendedSickNms[selectIndex].sickNm);
+          setIsOpenPopup(false);
+        }
       }
 
       if (event.key === KEYBOARD.arrowUp) {
@@ -50,7 +52,7 @@ const useKeyboard = (
     ]
   );
 
-  return { handleKeyboard, setSelectIndex };
+  return { handleKeyboard, selectIndex, setSelectIndex };
 };
 
 export default useKeyboard;

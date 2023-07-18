@@ -8,7 +8,7 @@ import useKeyboard from './hooks/useKeyboard';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(true);
+  const [isOpenPopup, setIsOpenPopup] = useState<boolean>(false);
   const [searchValue, setSearchValue] = useState<string>('');
   const [recommendedSickNms, setRecommendedSickNms] = useState<
     SickNmListProps[]
@@ -23,7 +23,7 @@ export default function App() {
 
   const { searchHistory, updateSearchHistory } = useSearchHistory();
 
-  const { handleKeyboard, setSelectIndex } = useKeyboard(
+  const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
     recommendedSickNms,
     isOpenPopup,
     setIsOpenPopup,
@@ -86,6 +86,7 @@ export default function App() {
             searchHistory={searchHistory}
             handleSearchValue={handleSearchValue}
             recommendedSickNms={recommendedSickNms}
+            selectIndex={selectIndex}
             setSelectIndex={setSelectIndex}
           />
         </div>

@@ -4,6 +4,7 @@ import SearchResultItem from './SearchResultItem';
 
 interface SearchPopupProps {
   isLoading: boolean;
+  selectIndex: number;
   searchValue: string;
   debouncedAndThrottledSearchValue: string;
   searchHistory: string[];
@@ -25,6 +26,7 @@ export default function SearchPopup({
   searchHistory,
   handleSearchValue,
   recommendedSickNms,
+  selectIndex,
   setSelectIndex,
 }: SearchPopupProps) {
   const directSearch = (searchKeyword: string) => {
@@ -40,6 +42,7 @@ export default function SearchPopup({
             searchValue={searchValue}
             resultKeyword={searchValue}
             directSearch={directSearch}
+            onKeyboard={false}
             setSelectIndex={setSelectIndex}
           />
           <h1 className="text-lightGray text-xs mt-3 mb-1 px-7">추천 검색어</h1>
@@ -47,12 +50,13 @@ export default function SearchPopup({
             <h2 className="text-sm text-darkGray px-7">검색중</h2>
           ) : recommendedSickNms.length > 0 ? (
             <ul>
-              {recommendedSickNms.map(({ sickCd, sickNm }) => (
+              {recommendedSickNms.map(({ sickCd, sickNm }, index) => (
                 <SearchResultItem
                   key={sickCd}
                   searchValue={debouncedAndThrottledSearchValue}
                   resultKeyword={sickNm}
                   directSearch={directSearch}
+                  onKeyboard={selectIndex === index}
                   setSelectIndex={setSelectIndex}
                 />
               ))}
@@ -74,6 +78,7 @@ export default function SearchPopup({
                       searchValue={searchValue}
                       resultKeyword={searchValue}
                       directSearch={directSearch}
+                      onKeyboard={selectIndex === index}
                       setSelectIndex={setSelectIndex}
                     />
                   ))}
