@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { SearchIcon } from './assets/icons';
 import { SickNmListProps, searchSickNmListAPI } from './service/searchAPI';
 import useSearchQuery from './hooks/useSearchQuery';
+import useKeyboard from './hooks/useKeyBoard';
 
 export default function App() {
   const searchRef = useRef<HTMLInputElement>(null);
@@ -17,6 +18,13 @@ export default function App() {
     value: searchValue,
     delay: 100,
   });
+
+  const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
+    recommendedSickNms,
+    isOpenPopup,
+    setIsOpenPopup,
+    setSearchValue
+  );
 
   const focusAndOpenPopup = () => {
     setIsOpenPopup(true);
@@ -103,32 +111,6 @@ export default function App() {
     };
     getSearchLists();
   }, [debouncedAndThrottledSearchValue]);
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key === 'ArrowUp') {
-      event.preventDefault();
-      setSelectSickNmsIndex((prevIndex) =>
-        prevIndex <= 0 ? recommendedSickNms.length - 1 : prevIndex - 1
-      );
-    } else if (event.key === 'ArrowDown') {
-      event.preventDefault();
-      setSelectSickNmsIndex((prevIndex) =>
-        prevIndex >= recommendedSickNms.length - 1 ? 0 : prevIndex + 1
-      );
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      if (selectSickNmsIndex !== -1) {
-        const selectedSickNm = recommendedSickNms[selectSickNmsIndex];
-        setSelectSickNmsIndex(-1);
-        directSearch(selectedSickNm.sickNm);
-      } else if (searchValue) {
-        updateSearchHistory(searchValue);
-        setSearchValue('');
-      } else if (!searchValue) {
-        setIsOpenPopup(false);
-      }
-    }
-  };
 
   return (
     <div className="bg-[#cae9ff] h-screen py-20">
