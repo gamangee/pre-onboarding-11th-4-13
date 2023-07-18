@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-tabindex */
+import { KEYWORD_LENGTH } from '../App';
 import { SickNmListProps } from '../service/searchAPI';
 import SearchResultItem from './SearchResultItem';
 
@@ -30,6 +31,8 @@ export default function SearchPopup({
   setSelectIndex,
 }: SearchPopupProps) {
   const directSearch = (searchKeyword: string) => {
+    console.log('click');
+
     setSearchValue(searchKeyword);
     handleSearchValue(searchKeyword);
   };
@@ -72,16 +75,18 @@ export default function SearchPopup({
             <div>
               {searchHistory.length ? (
                 <ul>
-                  {searchHistory.map((searchValue, index) => (
-                    <SearchResultItem
-                      key={searchValue + index}
-                      searchValue={searchValue}
-                      resultKeyword={searchValue}
-                      directSearch={directSearch}
-                      onKeyboard={selectIndex === index}
-                      setSelectIndex={setSelectIndex}
-                    />
-                  ))}
+                  {searchHistory
+                    .slice(0, KEYWORD_LENGTH)
+                    .map((searchValue, index) => (
+                      <SearchResultItem
+                        key={searchValue + index}
+                        searchValue={searchValue}
+                        resultKeyword={searchValue}
+                        directSearch={directSearch}
+                        onKeyboard={selectIndex === index}
+                        setSelectIndex={setSelectIndex}
+                      />
+                    ))}
                 </ul>
               ) : (
                 <div>
@@ -97,7 +102,7 @@ export default function SearchPopup({
             <h1 className="text-lightGray text-xs mt-3 mb-1 px-7">
               추천 검색어로 검색해보세요
             </h1>
-            <div className="flex items-center space-x-2 text-sm px-7">
+            <div className="flex items-center space-x-2 text-sm px-7 z-10">
               {RECOMMENDED_KEYWORDS.map(({ id, keyword }) => (
                 <div key={id}>
                   <button

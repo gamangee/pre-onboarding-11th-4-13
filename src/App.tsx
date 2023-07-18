@@ -44,7 +44,7 @@ export default function App() {
           debouncedAndThrottledSearchValue
         );
         setSelectIndex(-1);
-        setRecommendedSickNms(searchList);
+        setRecommendedSickNms(searchList.slice(0, KEYWORD_LENGTH));
       } catch (error) {
         console.log(error);
       } finally {
@@ -77,7 +77,7 @@ export default function App() {
           setSearchValue={setSearchValue}
           handleSearchValue={handleSearchValue}
         />
-        <div ref={popupRef} className={isOpenPopup ? 'block' : 'hidden'}>
+        <div ref={popupRef} className={isOpenPopup ? '' : 'hidden'}>
           <SearchPopup
             isLoading={isLoading}
             searchValue={searchValue}
@@ -94,3 +94,5 @@ export default function App() {
     </section>
   );
 }
+
+export const KEYWORD_LENGTH = 7;

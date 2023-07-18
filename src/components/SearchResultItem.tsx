@@ -18,12 +18,12 @@ export default function SearchResultItem({
 }: SearchResultItemProps) {
   return (
     <li
-      className={`px-5 py-2 hover:bg-lightGrayHover list-none ${
+      className={`px-7 py-2 hover:bg-lightGrayHover list-none ${
         onKeyboard ? 'bg-lightGrayHover' : ''
       }`}
     >
       <button
-        onClick={() => directSearch(searchValue)}
+        onClick={() => directSearch(resultKeyword)}
         onMouseOver={() => setSelectIndex(-1)}
         className="flex items-center space-x-2"
       >

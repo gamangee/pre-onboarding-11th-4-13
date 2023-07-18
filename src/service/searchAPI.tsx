@@ -1,10 +1,10 @@
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import {
   checkCachedResponse,
   setCacheStorage,
 } from '../utils/localCacheStorage';
 
-const BASE_URL = 'http://localhost:4000';
+export const BASE_URL = 'http://localhost:4000';
 const API_URL = '/sick?q=';
 const ERROR_MESSAGE = '오류가 발생했습니다.';
 
@@ -27,21 +27,19 @@ class searchSickNmAPI {
   async getSickNmList(searchKeyword: string) {
     if (searchKeyword === '') return [];
 
-    const config: AxiosRequestConfig = {
-      params: {
-        searchKeyword,
-      },
-    };
+    const completeApiUrl = `${API_URL}${searchKeyword}`;
 
-    const queryStr = new URLSearchParams(config.params).toString();
-    const cacheRes = await checkCachedResponse(API_URL, queryStr);
+    const cacheRes = await checkCachedResponse(completeApiUrl);
     if (cacheRes) return await cacheRes.json();
 
     try {
-      const { data } = await this.axiosInstance.get(API_URL, config);
+      const { data } = await this.axiosInstance.get(completeApiUrl);
       console.info('calling api');
-      setCacheStorage(API_URL, queryStr, data);
-      return data;
+      setCacheStorage(completeApiUrl, data);
+
+      return data.filter((item: SickNmListProps) =>
+        item.sickNm.startsWith(searchKeyword)
+      );
     } catch (error) {
       const axiosError = error as AxiosError<ErrorResponse>;
       alert(axiosError.response?.data.message || ERROR_MESSAGE);

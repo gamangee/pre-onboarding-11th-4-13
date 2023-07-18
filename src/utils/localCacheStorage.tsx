@@ -1,4 +1,4 @@
-import { SickNmListProps } from '../service/searchAPI';
+import { BASE_URL, SickNmListProps } from '../service/searchAPI';
 
 const FETCH_DATE = 'fetch-date';
 const EXPIRE_TIME = 1000 * 60 * 5;
@@ -13,15 +13,16 @@ export const checkCacheExpireTime = (cacheResponse: Response) => {
   return today - fetchDate > EXPIRE_TIME;
 };
 
-export const checkCachedResponse = async (url: string, queryStr: string) => {
-  const cacheStorage = await caches.open(url);
-  const cachedResponse = await cacheStorage.match(queryStr);
+export const checkCachedResponse = async (completeApiUrl: string) => {
+  const cacheName = completeApiUrl.replace(BASE_URL, '');
+  const cacheStorage = await caches.open(cacheName);
+  const cachedResponse = await cacheStorage.match(completeApiUrl);
 
   if (cachedResponse) {
     if (!checkCacheExpireTime(cachedResponse)) {
       return cachedResponse;
     } else {
-      await cacheStorage.delete(queryStr);
+      await cacheStorage.delete(completeApiUrl);
     }
   }
 
@@ -29,11 +30,11 @@ export const checkCachedResponse = async (url: string, queryStr: string) => {
 };
 
 export const setCacheStorage = async (
-  url: string,
-  queryStr: string,
+  completeApiUrl: string,
   data: SickNmListProps[]
 ) => {
-  const cacheStorage = await caches.open(url);
+  const cacheName = completeApiUrl.replace(BASE_URL, '');
+  const cacheStorage = await caches.open(cacheName);
   const response = new Response(JSON.stringify(data));
 
   const copiedResponse = response.clone();
@@ -46,5 +47,5 @@ export const setCacheStorage = async (
     headers: newHeaders,
   });
 
-  await cacheStorage.put(queryStr, newResponse);
+  await cacheStorage.put(completeApiUrl, newResponse);
 };
