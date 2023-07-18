@@ -26,6 +26,7 @@ export default function App() {
   const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
     recommendedSickNms,
     isOpenPopup,
+    searchHistory,
     setIsOpenPopup,
     setSearchValue
   );

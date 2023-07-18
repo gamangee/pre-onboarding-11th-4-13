@@ -23,6 +23,7 @@ export default function SearchResultItem({
       }`}
     >
       <button
+        type="button"
         onClick={() => directSearch(resultKeyword)}
         onMouseOver={() => setSelectIndex(-1)}
         className="flex items-center space-x-2"
