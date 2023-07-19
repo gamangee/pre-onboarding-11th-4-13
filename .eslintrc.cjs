@@ -11,7 +11,6 @@ module.exports = {
     'eslint:recommended',
     'plugin:react/recommended',
     'plugin:react-hooks/recommended',
-    'plugin:jsx-a11y/strict',
     'plugin:import/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -24,7 +23,7 @@ module.exports = {
     ecmaVersion: 2021,
     sourceType: 'module',
   },
-  plugins: ['react', 'react-hooks', 'jsx-a11y', 'import', '@typescript-eslint'],
+  plugins: ['react', 'react-hooks', 'import', '@typescript-eslint'],
   settings: {
     react: {
       version: 'detect',
@@ -32,7 +31,6 @@ module.exports = {
     'import/core-modules': ['axios'],
   },
   rules: {
-    'react/react-in-jsx-scope': 0,
     'import/no-unresolved': 'off',
   },
   overrides: [

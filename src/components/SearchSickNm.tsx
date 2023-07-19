@@ -1,3 +1,4 @@
+import React from 'react';
 import { DeleteBtn, SearchIcon } from '../assets/icons';
 
 interface SearchSickNmProps {

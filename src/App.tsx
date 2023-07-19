@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SickNmListProps, searchSickNmListAPI } from './service/searchAPI';
 import useSearchQuery from './hooks/useSearchQuery';
 import useSearchHistory from './hooks/useSearchHistory';
@@ -23,20 +23,19 @@ export default function App() {
 
   const { searchHistory, updateSearchHistory } = useSearchHistory();
 
+  const handleSearchValue = (searchSickNm: string) => {
+    if (searchSickNm.trim().length === 0) return;
+    updateSearchHistory(searchSickNm);
+  };
+
   const { handleKeyboard, selectIndex, setSelectIndex } = useKeyboard(
     recommendedSickNms,
     isOpenPopup,
     searchHistory,
+    handleSearchValue,
     setIsOpenPopup,
     setSearchValue
   );
-
-  const handleSearchValue = (searchSickNm: string) => {
-    if (searchSickNm.trim().length === 0) return;
-    updateSearchHistory(searchSickNm);
-    setIsOpenPopup(false);
-    if (popupRef.current) popupRef.current.className = 'hidden';
-  };
 
   useEffect(() => {
     const getSearchLists = async () => {

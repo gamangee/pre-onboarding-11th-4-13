@@ -11,6 +11,7 @@ const useKeyboard = (
   recommendedSickNms: SickNmListProps[],
   isOpenPopup: boolean,
   searchHistory: string[],
+  handleSearchValue: (searchSickNm: string) => void,
   setIsOpenPopup: React.Dispatch<React.SetStateAction<boolean>>,
   setSearchValue: React.Dispatch<React.SetStateAction<string>>
 ) => {
@@ -22,14 +23,14 @@ const useKeyboard = (
       if (event.isComposing) return;
 
       if (event.key === KEYBOARD.enter) {
-        // event.preventDefault();
+        event.preventDefault();
         if (selectIndex >= 0 && selectIndex < recommendedSickNms.length) {
           const selectedItem = recommendedSickNms[selectIndex]?.sickNm;
           if (selectedItem) {
             setSearchValue(selectedItem);
+            handleSearchValue(selectedItem);
             setIsOpenPopup(false);
           }
-          return;
         } else if (
           selectIndex >= recommendedSickNms.length &&
           selectIndex < recommendedSickNms.length + searchHistory.length
@@ -38,9 +39,9 @@ const useKeyboard = (
             searchHistory[selectIndex - recommendedSickNms.length];
           if (selectedItem) {
             setSearchValue(selectedItem);
+            handleSearchValue(selectedItem);
             setIsOpenPopup(false);
           }
-          return;
         }
       }
 

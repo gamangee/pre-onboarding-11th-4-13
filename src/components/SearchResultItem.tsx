@@ -1,4 +1,4 @@
-/* eslint-disable jsx-a11y/mouse-events-have-key-events */
+import React from 'react';
 import { SearchIcon } from '../assets/icons';
 
 interface SearchResultItemProps {
@@ -33,7 +33,7 @@ export default function SearchResultItem({
           }
         }}
         onMouseOver={() => setSelectIndex(-1)}
-        className="flex items-center space-x-2"
+        className="flex items-center space-x-2 w-full"
       >
         <div>
           <SearchIcon width="14px" height="14px" color="#a6afb7" />
