@@ -7,10 +7,8 @@ const useSearchHistory = () => {
 
   const updateSearchHistory = (searchValue: string) => {
     setSearchHistory((prevSearchValue) => {
-      if (prevSearchValue[0] === searchValue) return prevSearchValue;
-
       if (prevSearchValue.includes(searchValue)) {
-        prevSearchValue.splice(prevSearchValue.indexOf(searchValue), 1);
+        return prevSearchValue;
       }
 
       const newSearchValue = [searchValue, ...prevSearchValue].slice(0, 5);

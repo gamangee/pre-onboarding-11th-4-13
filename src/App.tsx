@@ -16,7 +16,7 @@ export default function App() {
 
   const popupRef = useRef<HTMLDivElement>(null);
 
-  const debouncedAndThrottledSearchValue = useSearchQuery({
+  const debouncedValue = useSearchQuery({
     value: searchValue,
     delay: 500,
   });
@@ -42,7 +42,7 @@ export default function App() {
       try {
         setIsLoading(true);
         const searchList = await searchSickNmListAPI.getSickNmList(
-          debouncedAndThrottledSearchValue
+          debouncedValue
         );
         setSelectIndex(-1);
         setRecommendedSickNms(searchList.slice(0, KEYWORD_LENGTH));
@@ -53,7 +53,7 @@ export default function App() {
       }
     };
     getSearchLists();
-  }, [debouncedAndThrottledSearchValue, setSelectIndex]);
+  }, [debouncedValue, setSelectIndex]);
 
   useEffect(() => {
     window.addEventListener('keydown', handleKeyboard);
@@ -83,7 +83,7 @@ export default function App() {
             isLoading={isLoading}
             searchValue={searchValue}
             setSearchValue={setSearchValue}
-            debouncedAndThrottledSearchValue={debouncedAndThrottledSearchValue}
+            debouncedValue={debouncedValue}
             searchHistory={searchHistory}
             handleSearchValue={handleSearchValue}
             recommendedSickNms={recommendedSickNms}

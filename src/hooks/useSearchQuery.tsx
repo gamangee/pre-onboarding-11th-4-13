@@ -7,23 +7,16 @@ interface SearchSuggestionsProps {
 
 const useSearchQuery = ({ value, delay }: SearchSuggestionsProps) => {
   const [searchValue, setSearchValue] = useState(value);
-  const [isDelay, setIsDelay] = useState<boolean>(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       setSearchValue(value);
-      setIsDelay(false);
     }, delay);
-
-    if (!isDelay) {
-      setIsDelay(true);
-      setSearchValue(value);
-    }
 
     return () => {
       clearTimeout(timer);
     };
-  }, [value, delay, isDelay]);
+  }, [value, delay]);
 
   return searchValue;
 };

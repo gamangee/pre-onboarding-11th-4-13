@@ -3,7 +3,7 @@ import { BASE_URL, SickNmListProps } from '../service/searchAPI';
 const FETCH_DATE = 'fetch-date';
 const EXPIRE_TIME = 1000 * 60 * 5;
 
-export const checkCacheExpireTime = (cacheResponse: Response) => {
+const checkCacheExpireTime = (cacheResponse: Response) => {
   const cachedDate = cacheResponse.headers.get(FETCH_DATE);
   if (!cachedDate) return;
 

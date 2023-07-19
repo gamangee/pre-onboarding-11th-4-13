@@ -6,7 +6,7 @@ interface SearchPopupProps {
   isLoading: boolean;
   selectIndex: number;
   searchValue: string;
-  debouncedAndThrottledSearchValue: string;
+  debouncedValue: string;
   searchHistory: string[];
   recommendedSickNms: SickNmListProps[];
   handleSearchValue: (searchValue: string) => void;
@@ -22,7 +22,7 @@ export default function SearchPopup({
   isLoading,
   searchValue,
   setSearchValue,
-  debouncedAndThrottledSearchValue,
+  debouncedValue,
   searchHistory,
   handleSearchValue,
   recommendedSickNms,
@@ -53,7 +53,7 @@ export default function SearchPopup({
               {recommendedSickNms.map(({ sickCd, sickNm }, index) => (
                 <SearchResultItem
                   key={sickCd}
-                  searchValue={debouncedAndThrottledSearchValue}
+                  searchValue={debouncedValue}
                   resultKeyword={sickNm}
                   directSearch={directSearch}
                   onKeyboard={selectIndex === index}
