@@ -30,7 +30,12 @@ class searchSickNmAPI {
     const completeApiUrl = `${API_URL}${searchKeyword}`;
 
     const cacheRes = await checkCachedResponse(completeApiUrl);
-    if (cacheRes) return await cacheRes.json();
+    if (cacheRes) {
+      const cacheData = await cacheRes.json();
+      return cacheData.filter((item: SickNmListProps) =>
+        item.sickNm.startsWith(searchKeyword)
+      );
+    }
 
     try {
       const { data } = await this.axiosInstance.get(completeApiUrl);

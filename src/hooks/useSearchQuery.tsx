@@ -23,7 +23,7 @@ const useSearchQuery = ({ value, delay }: SearchSuggestionsProps) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [value, delay]);
+  }, [value, delay, isDelay]);
 
   return searchValue;
 };

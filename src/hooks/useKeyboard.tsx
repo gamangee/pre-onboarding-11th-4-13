@@ -72,6 +72,7 @@ const useKeyboard = (
       setSearchValue,
       setIsOpenPopup,
       searchHistory,
+      handleSearchValue,
     ]
   );
 

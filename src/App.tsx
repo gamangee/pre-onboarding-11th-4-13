@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { SickNmListProps, searchSickNmListAPI } from './service/searchAPI';
 import useSearchQuery from './hooks/useSearchQuery';
 import useSearchHistory from './hooks/useSearchHistory';

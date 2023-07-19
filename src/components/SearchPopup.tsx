@@ -1,4 +1,3 @@
-import React from 'react';
 import { KEYWORD_LENGTH } from '../App';
 import { SickNmListProps } from '../service/searchAPI';
 import SearchResultItem from './SearchResultItem';
