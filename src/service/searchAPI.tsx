@@ -4,7 +4,7 @@ import {
   setCacheStorage,
 } from '../utils/localCacheStorage';
 
-export const BASE_URL = 'http://localhost:4000';
+export const BASE_URL = 'https://json-server-vercel-gamangee.vercel.app/';
 const API_URL = '/sick?q=';
 const ERROR_MESSAGE = '오류가 발생했습니다.';
 
